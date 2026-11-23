@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Gratis Translate
  * Plugin URI: https://github.com/juslintek/gratis-translate
- * Description: Multilingual content management with language taxonomy, switcher and hreflang. Replaces WPML ($39/yr), Polylang Pro ($99/yr).
+ * Description: Multilingual content management with language taxonomy, switcher and hreflang.
  * Version: 1.0.0
  * Requires at least: 6.4
  * Requires PHP: 8.1
