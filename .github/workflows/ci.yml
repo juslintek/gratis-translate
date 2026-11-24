@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-validate:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4', '8.5', '8.6']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: sqlite3, zip
+          coverage: none
+
+      - name: Lint PHP files
+        run: |
+          set -euo pipefail
+          find . -path ./.git -prune -o -path ./vendor -prune -o -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Validate plugin header and readme.txt
+        run: |
+          php -r '
+          $slug = basename(getcwd());
+          $main = $slug . ".php";
+          if (!is_file($main)) { fwrite(STDERR, "Missing main file: $main
+"); exit(1); }
+          $head = substr((string) file_get_contents($main), 0, 8192);
+          foreach (["Plugin Name:", "Version:", "Requires PHP:", "License:"] as $req) {
+              if (stripos($head, $req) === false) { fwrite(STDERR, "Missing header $req in $main
+"); exit(1); }
+          }
+          preg_match("/Version:\s*([^
+]+)/i", $head, $mv);
+          $ver = trim($mv[1] ?? "");
+          if (!is_file("readme.txt")) { fwrite(STDERR, "Missing readme.txt
+"); exit(1); }
+          $rt = (string) file_get_contents("readme.txt");
+          preg_match("/Stable tag:\s*([^
+]+)/i", $rt, $ms);
+          $stag = trim($ms[1] ?? "");
+          if ($ver === "" || $ver !== $stag) { fwrite(STDERR, "Version ($ver) != Stable tag ($stag)
+"); exit(1); }
+          echo "Header and readme.txt valid ($slug v$ver)
+";
+          '
