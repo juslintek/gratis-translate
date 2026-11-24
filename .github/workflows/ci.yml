@@ -37,24 +37,17 @@ jobs:
           php -r '
           $slug = basename(getcwd());
           $main = $slug . ".php";
-          if (!is_file($main)) { fwrite(STDERR, "Missing main file: $main
-"); exit(1); }
+          if (!is_file($main)) { fwrite(STDERR, "Missing main file: $main\n"); exit(1); }
           $head = substr((string) file_get_contents($main), 0, 8192);
           foreach (["Plugin Name:", "Version:", "Requires PHP:", "License:"] as $req) {
-              if (stripos($head, $req) === false) { fwrite(STDERR, "Missing header $req in $main
-"); exit(1); }
+              if (stripos($head, $req) === false) { fwrite(STDERR, "Missing header $req in $main\n"); exit(1); }
           }
-          preg_match("/Version:\s*([^
-]+)/i", $head, $mv);
+          preg_match("/Version:\s*([^\r\n]+)/i", $head, $mv);
           $ver = trim($mv[1] ?? "");
-          if (!is_file("readme.txt")) { fwrite(STDERR, "Missing readme.txt
-"); exit(1); }
+          if (!is_file("readme.txt")) { fwrite(STDERR, "Missing readme.txt\n"); exit(1); }
           $rt = (string) file_get_contents("readme.txt");
-          preg_match("/Stable tag:\s*([^
-]+)/i", $rt, $ms);
+          preg_match("/Stable tag:\s*([^\r\n]+)/i", $rt, $ms);
           $stag = trim($ms[1] ?? "");
-          if ($ver === "" || $ver !== $stag) { fwrite(STDERR, "Version ($ver) != Stable tag ($stag)
-"); exit(1); }
-          echo "Header and readme.txt valid ($slug v$ver)
-";
+          if ($ver === "" || $ver !== $stag) { fwrite(STDERR, "Version ($ver) != Stable tag ($stag)\n"); exit(1); }
+          echo "Header and readme.txt valid ($slug v$ver)\n";
           '
