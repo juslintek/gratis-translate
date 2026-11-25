@@ -113,6 +113,7 @@ final class Multilingual {
             'post_type'      => get_post_type($postId) ?: 'post',
             'posts_per_page' => 50, // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- bounded set of translations.
             'post_status'    => 'publish',
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- bounded translation-group lookup.
             'meta_query'     => [['key' => '_translation_of', 'value' => $original]],
         ];
         $all = get_posts($args);

@@ -41,7 +41,7 @@ Yes. Everything is free — no "Pro" version, no locked features, and no nag scr
 
 = Does this plugin make external HTTP requests? =
 
-No. Unless you explicitly configure an external service (such as a CDN or SMTP host), the plugin does not phone home or send analytics.
+No. This plugin runs entirely locally and does not phone home or send analytics.
 
 = Where do I get support? =
 
