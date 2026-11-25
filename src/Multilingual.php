@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  */
 final class Multilingual {
 
-    public const TAXONOMY = 'language';
+    public const TAXONOMY = 'gratis_language';
 
     /** Default languages seeded on first run: slug => label. */
     private const DEFAULT_LANGS = [
@@ -49,13 +49,17 @@ final class Multilingual {
         self::seedDefaults();
     }
 
-    /** Seed the default language terms once. */
+    /** Seed the default language terms once (option-guarded). */
     private static function seedDefaults(): void {
+        if (get_option('gratis_translate_seeded')) {
+            return;
+        }
         foreach (self::DEFAULT_LANGS as $slug => $label) {
             if (!term_exists($slug, self::TAXONOMY)) {
                 wp_insert_term($label, self::TAXONOMY, ['slug' => $slug]);
             }
         }
+        update_option('gratis_translate_seeded', 1, false);
     }
 
     /** `[gratis-language-switcher]` renders links to a post's translations. */
